@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefit.mq.repository.dao.MqProxyMapper">
+
+	<select id="getIdById" resultType="java.lang.String">
+		SELECT
+		title
+		from argue
+		limit 1;
+	</select>
+
+
+	<insert id="insertSelective" parameterType="com.lefit.mq.repository.model.MsgEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into ${table}
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="topic != null" >
+				topic,
+			</if>
+			<if test="tag != null" >
+				tag,
+			</if>
+			<if test="body != null" >
+				body,
+			</if>
+			<if test="msgId != null" >
+				msg_id,
+			</if>
+			<if test="msgKey != null">
+				msg_key,
+			</if>
+			<if test="ctime != null" >
+				ctime,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="topic != null" >
+				#{topic,jdbcType=VARCHAR},
+			</if>
+			<if test="tag != null" >
+				#{tag,jdbcType=VARCHAR},
+			</if>
+			<if test="body != null" >
+				#{body,jdbcType=VARCHAR},
+			</if>
+			<if test="msgId != null" >
+				#{msgId,jdbcType=VARCHAR},
+			</if>
+			<if test="msgKey != null">
+				#{msgKey,jdbcType=VARCHAR},
+			</if>
+			<if test="ctime != null" >
+				#{ctime,jdbcType=BIGINT},
+			</if>
+		</trim>
+	</insert>
+
+</mapper>
