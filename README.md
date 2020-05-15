@@ -1,5 +1,4 @@
 ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/WX20200515-142240%402x.png)
-![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/WX20200515-142307%402x.png)
 ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/WX20200515-142319%402x.png)
 ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/WX20200515-142335%402x.png)
 ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/WX20200515-142346%402x.png)
