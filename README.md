@@ -17,7 +17,7 @@
 ### 加入@EnableLefitMqProxy
 ```java
 @SpringBootApplication
-@EnableLefitMqProxy
+@EnableLefitMqTransaction
 public class UserApplication
 {
     public static void main(String[] args) {
