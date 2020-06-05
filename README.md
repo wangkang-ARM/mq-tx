@@ -14,14 +14,32 @@
 基于spring的无侵入式消息落地
 
 
-### 加入@EnableLefitMqProxy
+### 使用方式
+
 ```java
 @SpringBootApplication
+//加入@EnableLefitMqTransaction
 @EnableLefitMqTransaction
 public class UserApplication
 {
     public static void main(String[] args) {
         SpringApplication.run(UserApplication.class, args);
+    }
+}
+
+//使用重写mybatis后的MapperScan
+import com.lefit.mq.annotation.MapperScan;
+@MapperScan(value = {"com.lefit.xxx.xxx"}, sqlSessionFactory={"sqlSessionFactoryBean"})
+public class DatabaseConfig {
+    .....
+    @Bean
+    @Qualifier("sqlSessionFactoryBean")
+    public SqlSessionFactory sqlSessionFactoryBean() throws Exception {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(dataSource());
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        sqlSessionFactoryBean.setMapperLocations(resolver.getResources("classpath:/mybatis/user/*.xml"));
+        return sqlSessionFactoryBean.getObject();
     }
 }
 
