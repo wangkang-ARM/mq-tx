@@ -72,7 +72,9 @@ public class DatabaseConfig {
     ```java
     @Transactional
     public void addUserSourceTag(UUserSourceTag userSourceTag) {
+        //业务代码...
         //内部存在消息发送
+        
     }
     ```
     - 编程式
