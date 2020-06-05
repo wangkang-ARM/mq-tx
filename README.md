@@ -10,7 +10,7 @@
 ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/images/WX20200515-142511%402x.png)
 ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/images/WX20200515-142518%402x.png)
 ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/images/12344321.png)
-# mq-proxy
+# mq-tx
 基于spring的无侵入式消息落地
 
 
