@@ -15,7 +15,7 @@
 
 
 ### 使用方式
-
+- 嵌入代码
 ```java
 @SpringBootApplication
 //加入@EnableLefitMqTransaction
@@ -27,7 +27,7 @@ public class UserApplication
     }
 }
 
-//使用重写mybatis后的MapperScan
+//使用重写后的@MapperScan
 import com.lefit.mq.annotation.MapperScan;
 @MapperScan(value = {"com.lefit.xxx.xxx"}, sqlSessionFactory={"sqlSessionFactoryBean"})
 public class DatabaseConfig {
@@ -42,7 +42,10 @@ public class DatabaseConfig {
         return sqlSessionFactoryBean.getObject();
     }
 }
-
+- 增加配置
+    - 已经集成Apollo服务
+    - 未集成本地配置
+        lefit-user={"services": ["172.16.12.101#111","172.16.12.102#222"],"topics": ["LEFIT_USER_TOPIC_TEST"]}
 ```
 
 ```java
