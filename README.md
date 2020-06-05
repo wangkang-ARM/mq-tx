@@ -42,17 +42,67 @@ public class DatabaseConfig {
         return sqlSessionFactoryBean.getObject();
     }
 }
-- 增加配置
-    - 已经集成Apollo服务
-    - 未集成本地配置
-        lefit-user={"services": ["172.16.12.101#111","172.16.12.102#222"],"topics": ["LEFIT_USER_TOPIC_TEST"]}
 ```
+- 增加配置
 
+以key=value形式（服务名={"services":[服务器ip#标签], "topics":[需落库topic]}）
+
+- 已经集成Apollo服务
+    
+    ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/images/1.png)
+    ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/images/2.png)
+    ![image](https://github.com/wangkang-ARM/mq-proxy/blob/master/images/3.png)
+    
+- 未集成本地配置
+    
+     例如：lefit-user={"services": ["172.16.12.101#111","172.16.12.102#222"],"topics": ["LEFIT_USER_TOPIC_TEST"]}
+
+- 调用方式
+    - 声明式事务
+    ```java
+    @Transactional
+    public void addUserSourceTag(UUserSourceTag userSourceTag) {
+        //内部存在消息发送
+    }
+    ```
+    - 编程式
+    ```java
+         @Autowired
+         private TransactionTemplate transactionTemplate;
+         
+         public void addUserSourceTag(UUserSourceTag tag) {
+              transactionTemplate.execute(new TransactionCallback<String>() {
+
+                @Override
+                public String doInTransaction(TransactionStatus transactionStatus) {
+                    String result = null;
+                    try {
+                        int i =uUserSourceTagMapper.insert(tag);
+                        
+                        Message message = new Message();
+                        message.setKey("USER_INSERT_" + System.currentTimeMillis());
+                        message.setTopic("LEFIT_USER_TOPIC_TEST");
+                        message.setTag("USER_INSERT");
+                        message.setBody("xxxxxxxxx");
+                        
+                        SendResult res = messageTransactionApi.proxyProcessorMqMessage(message);
+                        result = res.getMessageId();
+                    } catch (Exception e) {
+                        transactionStatus.setRollbackOnly();
+                        System.out.println("Transfer error!");
+                        throw e;
+                    }
+                    return result;
+                }
+            });
+         }
+         
+    ```
 ```java
 <dependency>
-    <groupId>com.lefit.proxy</groupId>
-    <artifactId>mq-proxy</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <groupId>com.lefit.tx</groupId>
+    <artifactId>mq-tx</artifactId>
+    <version>1.0.1</version>
 </dependency>
 ```
 
