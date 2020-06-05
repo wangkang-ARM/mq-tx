@@ -15,6 +15,16 @@
 
 
 ### 使用方式
+- 依赖pom
+
+```java
+<dependency>
+    <groupId>com.lefit.tx</groupId>
+    <artifactId>mq-tx</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
 - 嵌入代码
 ```java
 @SpringBootApplication
@@ -98,11 +108,4 @@ public class DatabaseConfig {
          }
          
     ```
-```java
-<dependency>
-    <groupId>com.lefit.tx</groupId>
-    <artifactId>mq-tx</artifactId>
-    <version>1.0.1</version>
-</dependency>
-```
 
