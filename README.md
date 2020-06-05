@@ -81,6 +81,8 @@ public class DatabaseConfig {
     ```java
          @Autowired
          private TransactionTemplate transactionTemplate;
+         @Autowired
+         private MessageTransactionApi messageTransactionApi;
          
          public void addUserSourceTag(UUserSourceTag tag) {
               transactionTemplate.execute(new TransactionCallback<String>() {
