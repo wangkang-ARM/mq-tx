@@ -15,6 +15,7 @@
  */
 package com.lefit.mq.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,9 +147,12 @@ public class NetUtils {
     }
     
     public static String getLocalHost(){
-        return System.getenv("localhost");
-        //InetAddress address = getLocalAddress();
-        //return address == null ? LOCALHOST : address.getHostAddress();
+        String localhost = System.getenv("localhost");
+        if (StringUtils.isBlank(localhost)) {
+            InetAddress address = getLocalAddress();
+            localhost = address == null ? LOCALHOST : address.getHostAddress();
+        }
+        return localhost;
     }
     
     private static volatile InetAddress LOCAL_ADDRESS = null;

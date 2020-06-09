@@ -543,7 +543,7 @@ public class Constants {
 
     public static final String  RUNTIME_KEY                        = "runtime";
 
-    // when ROUTER_KEY's value is set to ROUTER_TYPE_CLEAR, RegistryDirectory will clean all current routers
+    // when ROUTER_KEY'sql value is set to ROUTER_TYPE_CLEAR, RegistryDirectory will clean all current routers
     public static final String  ROUTER_TYPE_CLEAR                  = "clean";
 
     public static final String  DEFAULT_SCRIPT_TYPE_KEY            = "javascript";

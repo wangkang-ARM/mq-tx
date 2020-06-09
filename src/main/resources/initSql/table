@@ -1,0 +1,14 @@
+#初始化消息表 表名对应topic名
+#例如以下 用户测试服务topic的名称为lefit_user_topic_test表名即为lefit_user_topic_test其他字段固定
+CREATE TABLE `lefit_user_topic_test` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `tag` varchar(128) NOT NULL DEFAULT '' COMMENT '消息tag',
+  `body` varchar(1024) NOT NULL DEFAULT '' COMMENT '消息体',
+  `message_id` varchar(128) NOT NULL DEFAULT '' COMMENT '消息id',
+  `message_key` varchar(128) NOT NULL DEFAULT '0' COMMENT '消息key',
+  `lable` int(11) NOT NULL DEFAULT '0' COMMENT '消费服务标签',
+  `retry_num` int(2) NOT NULL DEFAULT '0' COMMENT '重试10次',
+  `ctime` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `mtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='新增用户topic';

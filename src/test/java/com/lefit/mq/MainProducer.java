@@ -33,7 +33,7 @@ public class MainProducer {
             );
             //Call send message to deliver message to one of brokers.
             SendResult sendResult = producer.send(msg);
-            System.out.printf("%s%n", sendResult);
+            System.out.printf("%sql%n", sendResult);
         }
         //Shut down once the producer instance is not longer in use.
         producer.shutdown();
