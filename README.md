@@ -72,6 +72,7 @@ CREATE TABLE `lefit_user_topic_test` (
 - 增加配置
 
 以key=value形式（服务名={"services":[服务器ip#标签], "topics":[需落库topic]}）
+
 例如：lefit-user={"services": ["172.16.12.101#111","172.16.12.102#222"],"topics": ["LEFIT_USER_TOPIC_TEST"]}
 
 - 已经集成Apollo服务
