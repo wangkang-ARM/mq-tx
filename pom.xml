@@ -7,7 +7,7 @@
 
     <groupId>com.lefit.tx</groupId>
     <artifactId>mq-tx</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <name>mq-tx</name>
     <description>An easy-to-use Spring MyBatis for proxy mq.</description>

@@ -6,7 +6,7 @@
 		<result column="tag" jdbcType="VARCHAR" property="tag" />
 		<result column="body" jdbcType="VARCHAR" property="body" />
 		<result column="message_id" jdbcType="VARCHAR" property="messageId" />
-		<result column="message_key" jdbcType="VARCHAR" property="messageKey" />
+		<result column="message_key" jdbcType="VARCHAR" property="key" />
 		<result column="lable" jdbcType="INTEGER" property="lable" />
 		<result column="retry_num" jdbcType="INTEGER" property="retryNum"/>
 		<result column="ctime" jdbcType="BIGINT" property="ctime" />
@@ -31,7 +31,7 @@
 			<if test="messageId != null" >
 				message_id,
 			</if>
-			<if test="messageKey != null">
+			<if test="key != null">
 				message_key,
 			</if>
 			<if test="lable != null">
@@ -54,7 +54,7 @@
 			<if test="messageId != null" >
 				#{messageId,jdbcType=VARCHAR},
 			</if>
-			<if test="messageKey != null">
+			<if test="key != null">
 				#{key,jdbcType=VARCHAR},
 			</if>
 			<if test="lable != null">

@@ -137,7 +137,7 @@ public class ExecuteMsgTakeService {
         msgEntity.setTable(message.getTopic());
         msgEntity.setTag(message.getTag());
         msgEntity.setBody(new String(message.getBody()));
-        msgEntity.setMessageKey(message.getKey());
+        msgEntity.setKey(message.getKey());
         msgEntity.setCtime(System.currentTimeMillis());
         msgEntity.setLable(consistentHashingNodeManager.getNodeVal(msgEntity.getCtime().toString()));
         mqProxyMapper.insertSelective(msgEntity);
@@ -160,7 +160,7 @@ public class ExecuteMsgTakeService {
         msgEntity.setTable(message.getTopic());
         msgEntity.setTag(message.getTag());
         msgEntity.setBody(new String(message.getBody()));
-        msgEntity.setMessageKey(message.getKey());
+        msgEntity.setKey(message.getKey());
         msgEntity.setCtime(System.currentTimeMillis());
         msgEntity.setLable(consistentHashingNodeManager.getNodeVal(msgEntity.getCtime().toString()));
         mqProxyMapper.insertSelective(msgEntity);

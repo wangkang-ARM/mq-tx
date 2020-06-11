@@ -28,7 +28,7 @@ public class MqProxyBeanProcessor extends AbstractBeanProcessor {
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         if (bean instanceof Producer) {
             MqTxContext.putBean(Producer.class.getName(), bean);
-            Object obj = Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{Producer.class}, getMqReflectProxyInterceptor(bean));
+            Object obj = Proxy.newProxyInstance(Producer.class.getClassLoader(), new Class[]{Producer.class}, getMqReflectProxyInterceptor(bean));
             return obj;
         } else {
             for (Field field : bean.getClass().getDeclaredFields() ) {
@@ -37,7 +37,7 @@ public class MqProxyBeanProcessor extends AbstractBeanProcessor {
                     try {
                         Producer producer = (Producer) field.get(bean);
                         MqTxContext.putBean(Producer.class.getName(), producer);
-                        Object obj = Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{Producer.class}, getMqReflectProxyInterceptor(producer));
+                        Object obj = Proxy.newProxyInstance(Producer.class.getClassLoader(), new Class[]{Producer.class}, getMqReflectProxyInterceptor(producer));
                         field.set(bean, obj);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);

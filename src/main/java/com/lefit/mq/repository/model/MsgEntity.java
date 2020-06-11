@@ -18,7 +18,7 @@ public class MsgEntity {
     private String tag;
     private String body;
     private String messageId;
-    private String messageKey;
+    private String key;
     private Long ctime;
     private Date mtime;
     private Integer lable;
@@ -98,12 +98,12 @@ public class MsgEntity {
         this.lable = lable;
     }
 
-    public String getMessageKey() {
-        return messageKey;
+    public String getKey() {
+        return key;
     }
 
-    public void setMessageKey(String messageKey) {
-        this.messageKey = messageKey;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public Integer getRetryNum() {
