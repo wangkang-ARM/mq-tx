@@ -53,8 +53,11 @@ public class OnlineNodeRegister implements ApplicationRunner {
         //创建临时节点
         String node = consistentHashingNodeManager.getServers().stream().filter(e -> e.contains(localhostNetIp)).findFirst().get();
         zkClient.createPersistent(zkRootName, true);
-        zkClient.createEphemeral(zkRootName + "/" +node, "1");
-
+        String nodePath = zkRootName + "/" +node;
+        if (zkClient.exists(nodePath)) {
+            zkClient.delete(nodePath);
+        }
+        zkClient.createEphemeral(nodePath, "1");
         //延时30s 每个10分钟 执行本地需要补送的消息
         retryMsgTakeService.schedule(node, 30000, 60000*10, false);
     }

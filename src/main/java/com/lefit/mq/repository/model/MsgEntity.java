@@ -18,11 +18,11 @@ public class MsgEntity {
     private String tag;
     private String body;
     private String messageId;
-    private String key;
+    private String messageKey;
     private Long ctime;
     private Date mtime;
-
     private Integer lable;
+    private Integer retryNum;
 
     private String table;
 
@@ -66,14 +66,6 @@ public class MsgEntity {
         this.messageId = messageId;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public String getTable() {
         return table;
     }
@@ -104,5 +96,21 @@ public class MsgEntity {
 
     public void setLable(Integer lable) {
         this.lable = lable;
+    }
+
+    public String getMessageKey() {
+        return messageKey;
+    }
+
+    public void setMessageKey(String messageKey) {
+        this.messageKey = messageKey;
+    }
+
+    public Integer getRetryNum() {
+        return retryNum;
+    }
+
+    public void setRetryNum(Integer retryNum) {
+        this.retryNum = retryNum;
     }
 }

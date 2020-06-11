@@ -5,6 +5,7 @@ import com.aliyun.openservices.ons.api.Message;
 import com.aliyun.openservices.ons.api.Producer;
 import com.aliyun.openservices.ons.api.SendResult;
 import com.lefit.mq.processor.AfterTransactionOpt;
+import com.lefit.mq.repository.dao.MqBackUpMapper;
 import com.lefit.mq.repository.dao.MqProxyMapper;
 import com.lefit.mq.repository.model.MsgEntity;
 import com.lefit.mq.util.NetUtils;
@@ -15,12 +16,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * @ProjectName: lefit-user-parent
@@ -43,6 +46,9 @@ public class ExecuteMsgTakeService {
 
     @Autowired
     private MqProxyMapper mqProxyMapper;
+
+    @Autowired
+    private MqBackUpMapper mqBackUpMapper;
 
     @Autowired
     private AfterTransactionOpt afterTransactionOpt;
@@ -131,7 +137,7 @@ public class ExecuteMsgTakeService {
         msgEntity.setTable(message.getTopic());
         msgEntity.setTag(message.getTag());
         msgEntity.setBody(new String(message.getBody()));
-        msgEntity.setKey(message.getKey());
+        msgEntity.setMessageKey(message.getKey());
         msgEntity.setCtime(System.currentTimeMillis());
         msgEntity.setLable(consistentHashingNodeManager.getNodeVal(msgEntity.getCtime().toString()));
         mqProxyMapper.insertSelective(msgEntity);
@@ -154,7 +160,7 @@ public class ExecuteMsgTakeService {
         msgEntity.setTable(message.getTopic());
         msgEntity.setTag(message.getTag());
         msgEntity.setBody(new String(message.getBody()));
-        msgEntity.setKey(message.getKey());
+        msgEntity.setMessageKey(message.getKey());
         msgEntity.setCtime(System.currentTimeMillis());
         msgEntity.setLable(consistentHashingNodeManager.getNodeVal(msgEntity.getCtime().toString()));
         mqProxyMapper.insertSelective(msgEntity);
@@ -170,5 +176,29 @@ public class ExecuteMsgTakeService {
         result.setTopic(message.getTopic());
         result.setMessageId(msgEntity.getId().toString());
         return result;
+    }
+
+    public void historyBackUp() {
+        Set<String> topicList = MqTxContext.getBean("topics", Set.class);
+        topicList.stream().forEach(topic -> {
+            try {
+                List<MsgEntity> list = mqProxyMapper.queryBackUp(topic);
+                while (!list.isEmpty()) {
+                    doBackUp(topic, list);
+                    list = mqProxyMapper.queryBackUp(topic);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Transactional
+    public void doBackUp(String topic, List<MsgEntity> list) {
+        for (MsgEntity e : list) {
+            List<MsgEntity> tmpList = Arrays.asList(e);
+            mqBackUpMapper.batchInsert(topic, tmpList);
+            mqProxyMapper.deleteBackupAlready(topic, tmpList.stream().map(MsgEntity::getId).collect(Collectors.toList()));
+        }
     }
 }

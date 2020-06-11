@@ -158,7 +158,8 @@ public class ConsistentHashingNodeManager {
         if(virtualNode != null){
             return virtualNode;
         }
-        return null;
+        //防止hash无元素时 容错到label=-1防止主流程阻塞
+        return new NodeEntity("#", "#" , -1);
     }
 
     private Integer getIpLable(String ipService) {

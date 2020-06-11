@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lefit.mq.repository.dao.MqBackUpMapper">
+
+	<!--
+		INSERT INTO ${tableName}_history (id)
+		SELECT (id) FROM ${tableName}
+		WHERE (not EXISTS (SELECT id FROM lefit_user_topic_test_history ORDER BY id DESC LIMIT 1) OR
+		id &gt; (SELECT id FROM lefit_user_topic_test_history ORDER BY id DESC LIMIT 1))
+		AND ctime &lt; UNIX_TIMESTAMP(DATE_SUB(now(),INTERVAL 1 DAY))*1000;
+	-->
+
+	<insert id="batchInsert"  parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" separator=";">
+			insert into ${tableName}_history
+			<trim prefix="(" suffix=")" suffixOverrides="," >
+				<if test="item.id != null" >
+					id,
+				</if>
+				<if test="item.tag != null" >
+					tag,
+				</if>
+				<if test="item.body != null" >
+					body,
+				</if>
+				<if test="item.messageId != null" >
+					message_id,
+				</if>
+				<if test="item.messageKey != null">
+					message_key,
+				</if>
+				<if test="item.lable != null">
+					lable,
+				</if>
+				<if test="item.retryNum != null">
+					retry_num,
+				</if>
+				<if test="item.ctime != null" >
+					ctime,
+				</if>
+			</trim>
+			<trim prefix="values (" suffix=")" suffixOverrides="," >
+				<if test="item.id != null" >
+					#{item.id,jdbcType=BIGINT},
+				</if>
+				<if test="item.tag != null" >
+					#{item.tag,jdbcType=VARCHAR},
+				</if>
+				<if test="item.body != null" >
+					#{item.body,jdbcType=VARCHAR},
+				</if>
+				<if test="item.messageId != null" >
+					#{item.messageId,jdbcType=VARCHAR},
+				</if>
+				<if test="item.messageKey != null">
+					#{item.messageKey,jdbcType=VARCHAR},
+				</if>
+				<if test="item.lable != null">
+					#{item.lable,jdbcType=INTEGER},
+				</if>
+				<if test="item.retryNum != null">
+					#{item.retryNum,jdbcType=INTEGER},
+				</if>
+				<if test="item.ctime != null" >
+					#{item.ctime,jdbcType=BIGINT},
+				</if>
+			</trim>
+		</foreach>
+	</insert>
+
+</mapper>

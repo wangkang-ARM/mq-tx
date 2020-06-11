@@ -23,4 +23,8 @@ public interface MqProxyMapper {
     int updateRetryNum(@Param("tableName") String tableName, @Param("id") Long id);
 
     List<MsgEntity> queryFailMsg(@Param("tableName") String tableName, @Param("lable") Integer lable);
+
+    List<MsgEntity> queryBackUp(@Param("tableName") String tableName);
+
+    void deleteBackupAlready(@Param("tableName") String tableName, @Param("list") List<Long> list);
 }

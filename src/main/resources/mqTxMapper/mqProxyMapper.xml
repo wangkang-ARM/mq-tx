@@ -6,13 +6,14 @@
 		<result column="tag" jdbcType="VARCHAR" property="tag" />
 		<result column="body" jdbcType="VARCHAR" property="body" />
 		<result column="message_id" jdbcType="VARCHAR" property="messageId" />
-		<result column="message_key" jdbcType="VARCHAR" property="key" />
+		<result column="message_key" jdbcType="VARCHAR" property="messageKey" />
 		<result column="lable" jdbcType="INTEGER" property="lable" />
+		<result column="retry_num" jdbcType="INTEGER" property="retryNum"/>
 		<result column="ctime" jdbcType="BIGINT" property="ctime" />
 		<result column="mtime" jdbcType="DATE" property="mtime" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		id, tag, body, message_id, message_key, lable, ctime, mtime
+		id, tag, body, message_id, message_key, lable, retry_num, ctime, mtime
 	</sql>
 
 	<insert id="insertSelective" parameterType="com.lefit.mq.repository.model.MsgEntity" useGeneratedKeys="true" keyProperty="id">
@@ -30,7 +31,7 @@
 			<if test="messageId != null" >
 				message_id,
 			</if>
-			<if test="key != null">
+			<if test="messageKey != null">
 				message_key,
 			</if>
 			<if test="lable != null">
@@ -53,7 +54,7 @@
 			<if test="messageId != null" >
 				#{messageId,jdbcType=VARCHAR},
 			</if>
-			<if test="key != null">
+			<if test="messageKey != null">
 				#{key,jdbcType=VARCHAR},
 			</if>
 			<if test="lable != null">
@@ -73,6 +74,13 @@
 		UPDATE ${tableName} SET retry_num = retry_num + 1 WHERE id = #{id,jdbcType=BIGINT}
 	</update>
 
+	<delete id="deleteBackupAlready">
+		DELETE FROM ${tableName} where id in
+		<foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+			#{item, jdbcType=BIGINT}
+		</foreach>
+	</delete>
+
 	<select id="queryFailMsg" resultMap="BaseResultMap">
 		SELECT
 		<include refid="Base_Column_List" />
@@ -83,4 +91,15 @@
 		ORDER BY retry_num LIMIT 1;
 	</select>
 
+	<select id="queryBackUp" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM ${tableName}
+		WHERE (not EXISTS (SELECT id FROM lefit_user_topic_test_history ORDER BY id DESC LIMIT 1) OR
+		id &gt; (SELECT id FROM lefit_user_topic_test_history ORDER BY id DESC LIMIT 1))
+		AND ctime &lt; UNIX_TIMESTAMP(DATE_SUB(now(),INTERVAL 1 DAY))*1000
+		limit 5;
+	</select>
+
+	
 </mapper>
