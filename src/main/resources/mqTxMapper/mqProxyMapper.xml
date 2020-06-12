@@ -95,8 +95,8 @@
 		SELECT
 		<include refid="Base_Column_List" />
 		FROM ${tableName}
-		WHERE (not EXISTS (SELECT id FROM lefit_user_topic_test_history ORDER BY id DESC LIMIT 1) OR
-		id &gt; (SELECT id FROM lefit_user_topic_test_history ORDER BY id DESC LIMIT 1))
+		WHERE (not EXISTS (SELECT id FROM ${tableName}_history ORDER BY id DESC LIMIT 1) OR
+		id &gt; (SELECT id FROM ${tableName}_history ORDER BY id DESC LIMIT 1))
 		AND ctime &lt; UNIX_TIMESTAMP(DATE_SUB(now(),INTERVAL 1 DAY))*1000
 		limit 5;
 	</select>

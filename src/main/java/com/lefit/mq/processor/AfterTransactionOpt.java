@@ -48,7 +48,8 @@ public class AfterTransactionOpt implements ExecutorInterface {
             }
             afterTransactionOpts.set(stack);
         }else{
-            System.out.println("事务后置操作*必须*在一个活跃的事务中");
+            System.out.println("不在事务中立即执行");
+            afterTransactionService.executorService.execute(runnable);
         }
     }
 
