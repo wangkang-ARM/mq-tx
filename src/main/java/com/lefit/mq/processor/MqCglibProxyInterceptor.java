@@ -43,7 +43,7 @@ public class MqCglibProxyInterceptor implements MethodInterceptor {
     private void insertMsg(Object[] objects) {
         Message message = (Message) objects[0];
         MsgEntity msgEntity = new MsgEntity();
-        msgEntity.setTable(message.getTopic());
+        msgEntity.setTable(message.getTopic().toLowerCase());
         msgEntity.setTag(message.getTag());
         msgEntity.setBody(message.getBody());
         msgEntity.setMessageId(message.getMsgID());

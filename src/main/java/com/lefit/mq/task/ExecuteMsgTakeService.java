@@ -95,7 +95,8 @@ public class ExecuteMsgTakeService {
             topicList.stream().forEach(topic -> {
                 List<MsgEntity> msgList = null;
                 do {
-                    msgList = mqProxyMapper.queryFailMsg(topic, lable);
+                    String table = topic.toLowerCase();
+                    msgList = mqProxyMapper.queryFailMsg(table, lable);
                     for (MsgEntity entity : msgList) {
                         Message message = new Message();
                         BeanUtils.copyProperties(entity, message);
@@ -103,9 +104,9 @@ public class ExecuteMsgTakeService {
                         message.setBody(entity.getBody());
                         SendResult result = MqTxContext.getBean(Producer.class).send(message);
                         if(result != null && StringUtils.isNotBlank(result.getMessageId())) {
-                            mqProxyMapper.updateMessageId(message.getTopic(), entity.getId(), result.getMessageId());
+                            mqProxyMapper.updateMessageId(table, entity.getId(), result.getMessageId());
                         } else {
-                            mqProxyMapper.updateRetryNum(message.getTopic(), entity.getId());
+                            mqProxyMapper.updateRetryNum(table, entity.getId());
                         }
                     }
                 } while (!msgList.isEmpty());
@@ -134,7 +135,7 @@ public class ExecuteMsgTakeService {
     public SendResult insertMsg(Object[] objects, Object target) {
         Message message = (Message) objects[0];
         MsgEntity msgEntity = new MsgEntity();
-        msgEntity.setTable(message.getTopic());
+        msgEntity.setTable(message.getTopic().toLowerCase());
         msgEntity.setTag(message.getTag());
         msgEntity.setBody(message.getBody());
         msgEntity.setKey(message.getKey());
@@ -145,7 +146,7 @@ public class ExecuteMsgTakeService {
         afterTransactionOpt.execute(() -> {
             SendResult result = ((Producer)target).send(message);
             if(result != null && StringUtils.isNotBlank(result.getMessageId())) {
-                mqProxyMapper.updateMessageId(message.getTopic(), msgEntity.getId(), result.getMessageId());
+                mqProxyMapper.updateMessageId(message.getTopic().toLowerCase(), msgEntity.getId(), result.getMessageId());
             }
         });
 
@@ -157,7 +158,7 @@ public class ExecuteMsgTakeService {
 
     public SendResult insertMsg(Message message) {
         MsgEntity msgEntity = new MsgEntity();
-        msgEntity.setTable(message.getTopic());
+        msgEntity.setTable(message.getTopic().toLowerCase());
         msgEntity.setTag(message.getTag());
         msgEntity.setBody(message.getBody());
         msgEntity.setKey(message.getKey());
@@ -168,7 +169,7 @@ public class ExecuteMsgTakeService {
         afterTransactionOpt.execute(() -> {
             SendResult result = MqTxContext.getBean(Producer.class).send(message);
             if(result != null && StringUtils.isNotBlank(result.getMessageId())) {
-                mqProxyMapper.updateMessageId(message.getTopic(), msgEntity.getId(), result.getMessageId());
+                mqProxyMapper.updateMessageId(message.getTopic().toLowerCase(), msgEntity.getId(), result.getMessageId());
             }
         });
 
@@ -189,6 +190,7 @@ public class ExecuteMsgTakeService {
             Set<String> topicList = MqTxContext.getBean("topics", Set.class);
             topicList.stream().forEach(topic -> {
                 try {
+                    topic = topic.toLowerCase();
                     List<MsgEntity> list = mqProxyMapper.queryBackUp(topic);
                     while (!list.isEmpty()) {
                         doBackUp(topic, list);
@@ -199,7 +201,6 @@ public class ExecuteMsgTakeService {
                 }
             });
         }
-
 
     }
 
