@@ -16,7 +16,7 @@ public class MsgEntity {
     private Long id;
     private String topic;
     private String tag;
-    private String body;
+    private byte[] body;
     private String messageId;
     private String key;
     private Long ctime;
@@ -50,11 +50,11 @@ public class MsgEntity {
         this.tag = tag;
     }
 
-    public String getBody() {
+    public byte[] getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(byte[] body) {
         this.body = body;
     }
 

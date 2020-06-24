@@ -4,7 +4,7 @@
 	<resultMap id="BaseResultMap" type="com.lefit.mq.repository.model.MsgEntity">
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="tag" jdbcType="VARCHAR" property="tag" />
-		<result column="body" jdbcType="VARCHAR" property="body" />
+		<result column="body" jdbcType="VARBINARY" property="body" />
 		<result column="message_id" jdbcType="VARCHAR" property="messageId" />
 		<result column="message_key" jdbcType="VARCHAR" property="key" />
 		<result column="lable" jdbcType="INTEGER" property="lable" />
@@ -49,7 +49,7 @@
 				#{tag,jdbcType=VARCHAR},
 			</if>
 			<if test="body != null" >
-				#{body,jdbcType=VARCHAR},
+				#{body,jdbcType=VARBINARY},
 			</if>
 			<if test="messageId != null" >
 				#{messageId,jdbcType=VARCHAR},
@@ -88,7 +88,7 @@
 		WHERE lable = #{lable,jdbcType=INTEGER}
 		AND message_id = ''
 		AND retry_num &lt; 10
-		ORDER BY retry_num LIMIT 1;
+		ORDER BY retry_num LIMIT 100;
 	</select>
 
 	<select id="queryBackUp" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -98,7 +98,7 @@
 		WHERE (not EXISTS (SELECT id FROM ${tableName}_history ORDER BY id DESC LIMIT 1) OR
 		id &gt; (SELECT id FROM ${tableName}_history ORDER BY id DESC LIMIT 1))
 		AND ctime &lt; UNIX_TIMESTAMP(DATE_SUB(now(),INTERVAL 1 DAY))*1000
-		limit 5;
+		limit 200;
 	</select>
 
 	

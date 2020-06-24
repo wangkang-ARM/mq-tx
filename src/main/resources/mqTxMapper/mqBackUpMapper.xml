@@ -47,7 +47,7 @@
 					#{item.tag,jdbcType=VARCHAR},
 				</if>
 				<if test="item.body != null" >
-					#{item.body,jdbcType=VARCHAR},
+					#{item.body,jdbcType=VARBINARY},
 				</if>
 				<if test="item.messageId != null" >
 					#{item.messageId,jdbcType=VARCHAR},

@@ -100,7 +100,7 @@ public class ExecuteMsgTakeService {
                         Message message = new Message();
                         BeanUtils.copyProperties(entity, message);
                         message.setTopic(topic);
-                        message.setBody(entity.getBody().getBytes());
+                        message.setBody(entity.getBody());
                         SendResult result = MqTxContext.getBean(Producer.class).send(message);
                         if(result != null && StringUtils.isNotBlank(result.getMessageId())) {
                             mqProxyMapper.updateMessageId(message.getTopic(), entity.getId(), result.getMessageId());
@@ -136,7 +136,7 @@ public class ExecuteMsgTakeService {
         MsgEntity msgEntity = new MsgEntity();
         msgEntity.setTable(message.getTopic());
         msgEntity.setTag(message.getTag());
-        msgEntity.setBody(new String(message.getBody()));
+        msgEntity.setBody(message.getBody());
         msgEntity.setKey(message.getKey());
         msgEntity.setCtime(System.currentTimeMillis());
         msgEntity.setLable(consistentHashingNodeManager.getNodeVal(msgEntity.getCtime().toString()));
@@ -159,7 +159,7 @@ public class ExecuteMsgTakeService {
         MsgEntity msgEntity = new MsgEntity();
         msgEntity.setTable(message.getTopic());
         msgEntity.setTag(message.getTag());
-        msgEntity.setBody(new String(message.getBody()));
+        msgEntity.setBody(message.getBody());
         msgEntity.setKey(message.getKey());
         msgEntity.setCtime(System.currentTimeMillis());
         msgEntity.setLable(consistentHashingNodeManager.getNodeVal(msgEntity.getCtime().toString()));
@@ -179,18 +179,28 @@ public class ExecuteMsgTakeService {
     }
 
     public void historyBackUp() {
-        Set<String> topicList = MqTxContext.getBean("topics", Set.class);
-        topicList.stream().forEach(topic -> {
-            try {
-                List<MsgEntity> list = mqProxyMapper.queryBackUp(topic);
-                while (!list.isEmpty()) {
-                    doBackUp(topic, list);
-                    list = mqProxyMapper.queryBackUp(topic);
+        if (consistentHashingNodeManager.getRealNodes().isEmpty()) {
+            return;
+        }
+        //选取第一个在线节点执行
+        String index = new ArrayList<>(consistentHashingNodeManager.getRealNodes()).get(0);
+        String[] arr= StringUtils.split(index, "#");
+        if (arr[0].equals(NetUtils.getLocalHost())) {
+            Set<String> topicList = MqTxContext.getBean("topics", Set.class);
+            topicList.stream().forEach(topic -> {
+                try {
+                    List<MsgEntity> list = mqProxyMapper.queryBackUp(topic);
+                    while (!list.isEmpty()) {
+                        doBackUp(topic, list);
+                        list = mqProxyMapper.queryBackUp(topic);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+            });
+        }
+
+
     }
 
     @Transactional
