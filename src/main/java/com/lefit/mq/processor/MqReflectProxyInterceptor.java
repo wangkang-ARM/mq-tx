@@ -41,7 +41,6 @@ public class MqReflectProxyInterceptor implements InvocationHandler, Application
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Object res = null;
         if (proxy instanceof Producer
-                && method.getName().equals("send")
                 && MqTxContext.getBean("topics", Set.class).contains(((Message)args[0]).getTopic())) {
             return getRetryMsgTakeService().insertMsg(args, target);
         } else {
